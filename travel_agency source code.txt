@@ -1,0 +1,162 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct client
+{
+    char id[5];
+    char* name[15];
+    int number;
+    char* address[10];
+    int number_buses;
+    int number_traveller;
+
+}c;
+void addClient(struct client c)
+{
+    FILE *fp;
+
+
+ // fp=fopen("Buses.txt","r");
+
+
+// fp.close();
+
+ //  FILE *fp;
+
+
+    fp=fopen("Buses.txt","r");
+     int buses = 0;
+     int traveller=0;
+   //  int addbus;
+    // int addtraveller;
+
+  fscanf (fp, "%d %d", &buses,&traveller);
+  printf("\nNumber of buses available=");
+      printf ("%d ", buses);
+      printf("\n");
+      printf("\nNumber of traveller available=");
+      printf("%d",traveller);
+      printf("\n");
+
+    FILE *fin;
+    fin=fopen("client.txt","a");
+
+    printf("\nEnter the number of buses to add=");
+      scanf("%d",&c.number_buses);
+      printf("\nEnter number of Travellers to add=");
+      scanf("%d",&c.number_traveller);
+
+      if(c.number_buses>buses||c.number_traveller>traveller)
+      {
+          printf("Stock not available");
+          return ;
+      }
+
+  printf("\nEnter Client Id=");
+  scanf("%s",&c.id);
+
+
+  printf("\n");
+  printf("Enter Client name=");
+  scanf("%s",&c.name);
+
+  printf("\n");
+  printf("Enter Client number=");
+  scanf("%d",&c.number);
+
+  printf("\n");
+  printf("Enter Client Address=");
+  scanf("%s",&c.address);
+  fwrite(&c,sizeof(c),1,fin);
+ fclose(fin);
+   fp=fopen("Buses.txt","w");
+   int left = buses-c.number_buses;
+   printf("%d",left);
+   printf("\n");
+   fprintf(fp,"%d",left);
+   fprintf(fp," ");
+   fprintf(fp,"%d",traveller-c.number_traveller);
+   printf("%d %d %d %d",buses,c.number_buses,traveller,c.number_traveller);
+
+}
+
+
+ void searchClient(struct client c)
+{
+    char cid1[5];
+    FILE *fin;
+    fin=fopen("client.txt","rb");
+     printf("\nENTER THE ID    :->");
+                    scanf("%s",&cid1);
+                    while(fread(&c,sizeof(c),1,fin))
+                {
+                    if(strcmp(cid1, c.id) == 0)
+                       {
+                           printf("\n\tName=%s\t Number=%d\t Address=%s\tBuses=%d\tTraveller=%d", c.name, c.number, c.address,c.number_buses,c.number_traveller);
+
+                           break;
+                        }
+
+
+
+                }
+
+
+ fclose(fin);
+}
+
+void showClient()
+{
+
+  FILE *fin;
+  fin=fopen("client.txt","rb");
+ // printf("\nid\tName\tNumber\tAddress\n");
+ while(fread(&c,sizeof(c),1,fin))
+ {
+
+     printf("\nID=%s",c.id);
+    printf("  ");
+    printf("NAME=%s",c.name);
+    printf("  ");
+    printf("NUMBER=%d",c.number);
+    printf("  ");
+    printf("ADDRESS=%s",c.address);
+    printf("  ");
+    printf("BUSES=%d",c.number_buses);
+    printf("  ");
+    printf("TRAVELLER=%d",c.number_traveller);
+    printf("  ");
+
+  //  fseek(fin,sizeof(c),0);
+ }
+ fclose(fin);
+}
+
+int main()
+{
+    char ch;
+    int no;
+do{
+      printf("        MENU:\n");
+      printf("\t1- Add Client\n");
+      printf("\t2- Show client\n");
+      printf("\t3- Search Client\n");
+       printf("\n");
+    printf("Enter your choice=");
+    scanf("%d",&no);
+
+    switch(no)
+    {
+        case 1: addClient(c);
+        break;
+       case 2: showClient(c);
+        break;
+       case 3: searchClient(c);
+        break;
+        default:
+            printf("wrong input\n");
+    }
+    printf("\nWant input again,y for yes,n for no\n");
+    scanf("%s",&ch);
+  }while(ch=='y'||ch=='Y');
+    return 0;
+}
