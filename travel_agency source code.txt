@@ -36,13 +36,13 @@ void addClient(struct client c)
       printf("\nNumber of traveller available=");
       printf("%d",traveller);
       printf("\n");
-
+  fclose(fp);
     FILE *fin;
     fin=fopen("client.txt","a");
 
-    printf("\nEnter the number of buses to add=");
+    printf("\nEnter the number of buses to book=");
       scanf("%d",&c.number_buses);
-      printf("\nEnter number of Travellers to add=");
+      printf("\nEnter number of Travellers to book=");
       scanf("%d",&c.number_traveller);
 
       if(c.number_buses>buses||c.number_traveller>traveller)
@@ -76,7 +76,7 @@ void addClient(struct client c)
    fprintf(fp," ");
    fprintf(fp,"%d",traveller-c.number_traveller);
    printf("%d %d %d %d",buses,c.number_buses,traveller,c.number_traveller);
-
+ fclose(fp);
 }
 
 
