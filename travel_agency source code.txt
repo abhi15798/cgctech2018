@@ -7,45 +7,35 @@ struct client
     int number;
     char* address[10];
     int number_buses;
-    int number_traveller;
+    int number_cars;
 
 }c;
-void addClient(struct client c)
+void addClient(struct client c)                    //when a new client visits records of that client is being saved.
 {
     FILE *fp;
 
-
- // fp=fopen("Buses.txt","r");
-
-
-// fp.close();
-
- //  FILE *fp;
-
-
     fp=fopen("Buses.txt","r");
      int buses = 0;
-     int traveller=0;
-   //  int addbus;
-    // int addtraveller;
+     int cars=0;
 
-  fscanf (fp, "%d %d", &buses,&traveller);
+  fscanf (fp, "%d %d", &buses,&cars);
   printf("\nNumber of buses available=");
       printf ("%d ", buses);
       printf("\n");
-      printf("\nNumber of traveller available=");
-      printf("%d",traveller);
+      printf("\nNumber of cars available=");
+      printf("%d",cars);
       printf("\n");
+      fclose(fp);
 
     FILE *fin;
     fin=fopen("client.txt","a");
 
-    printf("\nEnter the number of buses to add=");
+    printf("\nEnter the number of buses to book=");
       scanf("%d",&c.number_buses);
-      printf("\nEnter number of Travellers to add=");
-      scanf("%d",&c.number_traveller);
+      printf("\nEnter number of cars to book=");
+      scanf("%d",&c.number_cars);
 
-      if(c.number_buses>buses||c.number_traveller>traveller)
+      if(c.number_buses>buses||c.number_cars>cars)
       {
           printf("Stock not available");
           return ;
@@ -54,7 +44,20 @@ void addClient(struct client c)
   printf("\nEnter Client Id=");
   scanf("%s",&c.id);
 
+ /* char cid2[5];
+  cid2[5]=c.id;
+  while(fread(&c,sizeof(c),1,fin))
+                {
+                    if(strcmp(cid2, c.id) == 0)
+                       {
+                          // printf("\n\tName=%s\t Number=%d\t Address=%s\tBuses=%d\tCars=%d", c.name, c.number, c.address,c.number_buses,c.number_cars);
+                               printf("ID already exist");
+                               return;
+                               addClient(c);
+                        }
 
+
+*/
   printf("\n");
   printf("Enter Client name=");
   scanf("%s",&c.name);
@@ -69,18 +72,20 @@ void addClient(struct client c)
   fwrite(&c,sizeof(c),1,fin);
  fclose(fin);
    fp=fopen("Buses.txt","w");
-   int left = buses-c.number_buses;
-   printf("%d",left);
+   int left_buses = buses-c.number_buses;
+   int left_cars=cars-c.number_cars;
+ //  printf("%d",left);
    printf("\n");
-   fprintf(fp,"%d",left);
+   fprintf(fp,"%d",left_buses);
    fprintf(fp," ");
-   fprintf(fp,"%d",traveller-c.number_traveller);
-   printf("%d %d %d %d",buses,c.number_buses,traveller,c.number_traveller);
+   fprintf(fp,"%d",left_cars);
+     fclose(fp);
+ //  printf("%d %d %d %d",buses,c.number_buses,traveller,c.number_traveller);
 
 }
 
 
- void searchClient(struct client c)
+ void searchClient(struct client c)                            //searches a client by his id in the file
 {
     char cid1[5];
     FILE *fin;
@@ -91,7 +96,7 @@ void addClient(struct client c)
                 {
                     if(strcmp(cid1, c.id) == 0)
                        {
-                           printf("\n\tName=%s\t Number=%d\t Address=%s\tBuses=%d\tTraveller=%d", c.name, c.number, c.address,c.number_buses,c.number_traveller);
+                           printf("\n\tName=%s\t Number=%d\t Address=%s\tBuses=%d\tCars=%d", c.name, c.number, c.address,c.number_buses,c.number_cars);
 
                            break;
                         }
@@ -104,7 +109,7 @@ void addClient(struct client c)
  fclose(fin);
 }
 
-void showClient()
+void showClient()                                      //show whole file database
 {
 
   FILE *fin;
@@ -123,7 +128,7 @@ void showClient()
     printf("  ");
     printf("BUSES=%d",c.number_buses);
     printf("  ");
-    printf("TRAVELLER=%d",c.number_traveller);
+    printf("CARS=%d",c.number_cars);
     printf("  ");
 
   //  fseek(fin,sizeof(c),0);
@@ -131,15 +136,82 @@ void showClient()
  fclose(fin);
 }
 
+void removeClient(struct client c)                   //function to remove recorf from file
+{
+    char cid1[5];
+    int addbuses,addcars;
+
+ FILE *fp;
+
+    fp=fopen("Buses.txt","r");
+     int buses = 0;
+     int cars=0;
+
+  fscanf (fp, "%d %d", &buses,&cars);
+
+      fclose(fp);
+
+    int found=0;
+
+    FILE *fin;
+    FILE *f_t;
+    fin=fopen("client.txt","rb");
+    f_t=fopen("client_temp.txt","wb");
+     printf("\nENTER THE ID    :->");
+                    scanf("%s",&cid1);
+                    while(fread(&c,sizeof(c),1,fin)!=NULL)
+                {
+                    if(strcmp(cid1, c.id) == 0)
+                       {
+                           printf("\n\tName=%s\t Number=%d\t Address=%s\tBuses=%d\tCars=%d", c.name, c.number, c.address,c.number_buses,c.number_cars);
+                          addbuses=c.number_buses;
+                          addcars=c.number_cars;
+                          found=1;
+
+
+                           printf("\nRecord Deleted\n");
+                        }
+                        else
+                            {
+                                fwrite(&c, sizeof(c), 1, f_t);
+                             }
+                }
+
+                if (found!=1)
+                {
+		          printf("\nNo record found with the requested ID\n");
+                }
+
+
+//     FILE *fp;
+    fp=fopen("Buses.txt","w");
+   int left_buses = buses+addbuses;
+   int left_cars=cars+addcars;
+ //  printf("%d",left_buses);
+   printf("\n");
+   fprintf(fp,"%d",left_buses);
+   fprintf(fp," ");
+   fprintf(fp,"%d",left_cars);
+     fclose(fp);
+     fclose(fin);
+     fclose(f_t);
+     remove("client.txt");
+	rename("client_temp.txt", "client.txt");
+
+
+
+}
+
 int main()
 {
     char ch;
     int no;
-do{
+do{                                                     //main function to show which operation to perform
       printf("        MENU:\n");
       printf("\t1- Add Client\n");
-      printf("\t2- Show client\n");
+      printf("\t2- Show All Client\n");
       printf("\t3- Search Client\n");
+      printf("\t4- Remove Client\n");
        printf("\n");
     printf("Enter your choice=");
     scanf("%d",&no);
@@ -152,9 +224,12 @@ do{
         break;
        case 3: searchClient(c);
         break;
+        case 4: removeClient(c);
+        break;
         default:
             printf("wrong input\n");
     }
+    printf("\n");
     printf("\nWant input again,y for yes,n for no\n");
     scanf("%s",&ch);
   }while(ch=='y'||ch=='Y');
